@@ -158,8 +158,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: bb5350641e5195e40966c64990003282, type: 3}
   - {fileID: 21300000, guid: d256ab570f3d805488cf3750f66ff09b, type: 3}
   - {fileID: 21300000, guid: 9e6625d2a18eb72449fcb13c4c6882dc, type: 3}
-  gridXSize: 6
-  gridYSize: 6
+  gridXSize: 8
+  gridYSize: 8
 --- !u!4 &794888149
 Transform:
   m_ObjectHideFlags: 0

@@ -55,6 +55,14 @@ namespace Game.Logic
             return false;
         }
 
+        public void SwapGemsPositions(Gem gemA, Gem gemB)
+        {
+            gemA.Position.Swap(gemB.Position);
+
+            Grid[gemA.Position.Row, gemA.Position.Column] = gemA;
+            Grid[gemB.Position.Row, gemB.Position.Column] = gemB;
+        }
+
         #endregion
     }
 }

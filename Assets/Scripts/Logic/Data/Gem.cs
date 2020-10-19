@@ -10,14 +10,17 @@ namespace Game.Logic
         [SerializeField]
         private SpriteRenderer spriteRenderer = default;
 
+        private GridPosition position = new GridPosition();
+
         #endregion
 
         #region Public Properties
 
         public SpriteRenderer SpriteRenderer => spriteRenderer;
 
-        public int Row;
-        public int Column;
+        public GridPosition Position => position;
+
+        public bool Removed { get; set; }
 
         public bool Equals(Sprite otherSprite)
         {

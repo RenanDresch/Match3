@@ -82,6 +82,14 @@ namespace Game.Logic
             StartCoroutine(timerLabelUpdateCoroutine);
         }
 
+        public void PauseTimer()
+        {
+            if (timerLabelUpdateCoroutine != null)
+            {
+                StopCoroutine(timerLabelUpdateCoroutine);
+            }
+        }
+
         #endregion
     }
 }
