@@ -3,7 +3,7 @@
 namespace Game.FX
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SoudFXController : MonoBehaviour
+    public class SoundFXController : MonoBehaviour
     {
         #region Fields
 

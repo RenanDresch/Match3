@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Game.FX
 {
     [RequireComponent(typeof(Button))]
-    public class StartGameButton : MonoBehaviour
+    public class QuitGameButton : MonoBehaviour
     {
         #region Fields
 
@@ -22,22 +22,13 @@ namespace Game.FX
 
         private void Awake()
         {
-            button.onClick.AddListener(StartGame);
+            button.onClick.AddListener(QuitGame);
         }
 
-        private void StartGame()
+        private void QuitGame()
         {
             GameMusicManager.Instance.SetMusicVolume(.2f);
-            fader.Fade(1).OnComplete(LoadLevel);
-        }
-
-        private void LoadLevel()
-        {
-            SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene())
-                .completed += (operation) =>
-                {
-                    SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
-                };
+            fader.Fade(1).OnComplete(Application.Quit);
         }
 
         private void Reset()

@@ -1,6 +1,6 @@
 ﻿namespace Game.Contracts
 {
-    public enum SwapDirection
+    public enum SwipeDirection
     {
         None = 0,
         Up = 1,

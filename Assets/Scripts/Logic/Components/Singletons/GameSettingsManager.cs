@@ -9,21 +9,20 @@ namespace Game.Logic
         #region Fields
 
         [SerializeField]
-        private Sprite[] availableGems = default;
-
-        [SerializeField]
-        private int gridXSize = default;
-        [SerializeField]
-        public int gridYSize = default;
+        private GameConfigFile gameConfig = default;
 
         #endregion
 
         #region Properties
 
-        public Sprite[] AvailableGems => availableGems;
+        public Sprite[] AvailableGems => gameConfig.AvailableGems;
+        public int GridXSize => gameConfig.BoardColumns;
+        public int GridYSize => gameConfig.BoardRows;
 
-        public int GridXSize => gridXSize;
-        public int GridYSize => gridYSize;
+        public int InitialTargetScore => gameConfig.InitialTargetScore;
+        public int TargetScoreMultiplier => gameConfig.TargetScoreMultiplier;
+
+        public int TimerResetSeconds => gameConfig.TimerResetSeconds;
 
         #endregion
 

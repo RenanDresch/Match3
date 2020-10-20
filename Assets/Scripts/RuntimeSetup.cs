@@ -1,18 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RuntimeSetup : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RuntimeInitializeOnLoad()
     {
-        
-    }
+        Application.targetFrameRate = 120;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        var loadedScenes = SceneManager.sceneCount;
+        for (int i = 0; i < loadedScenes; i++)
+        {
+            if(SceneManager.GetSceneAt(i).name == "Singletons")
+            {
+                return;
+            }   
+        }
+
+        SceneManager.LoadScene("Singletons", LoadSceneMode.Additive);
     }
 }

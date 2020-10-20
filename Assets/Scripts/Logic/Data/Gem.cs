@@ -18,7 +18,17 @@ namespace Game.Logic
 
         public SpriteRenderer SpriteRenderer => spriteRenderer;
 
-        public GridPosition Position => position;
+        public GridPosition Position
+        {
+            get
+            {
+                return position;
+            }
+            set
+            {
+                position = value;
+            }
+        }
 
         public bool Removed { get; set; }
 

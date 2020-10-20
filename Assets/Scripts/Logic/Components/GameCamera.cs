@@ -13,15 +13,15 @@ namespace Game.Logic
 
         #endregion
 
-        #region Private Methods
+        #region Public Methods
 
-        private void Start()
+        public void SetupCamera()
         {
             var gameSettings = GameSettingsManager.Instance;
 
             cameraComponent.orthographicSize = gameSettings.GridXSize >= gameSettings.GridYSize ?
-                (float)(gameSettings.GridXSize / 2) + 0.2f :
-                (float)(gameSettings.GridYSize / 2) + 0.2f;
+                ((float)gameSettings.GridXSize / 2) + 0.2f :
+                ((float)gameSettings.GridYSize / 2) + 0.2f;
         }
 
         private void Reset()

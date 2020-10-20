@@ -6,6 +6,8 @@ namespace Game.FX
 {
     public class GeneralAnimator : MonoBehaviour
     {
+        #region Gem Animations
+
         public Tween AnimateDelection(Transform gem)
         {
             return gem.DOScale(1.4f, .5f).SetEase(Ease.OutBack);
@@ -88,7 +90,7 @@ namespace Game.FX
             return sequence;
         }
 
-        public Sequence AnimateGemDrop(Dictionary<Transform, Vector3> newGemPositions)
+        public Sequence AnimateGemMove(Dictionary<Transform, Vector3> newGemPositions)
         {
             var sequence = DOTween.Sequence();
 
@@ -96,10 +98,60 @@ namespace Game.FX
             {
                 sequence.Join(gemPosition.Key.DOMove(
                     gemPosition.Value,
-                    0.2f));
+                    0.35f));
+                sequence.Join(gemPosition.Key.DOScale(
+                    Vector3.one,
+                    0.35f));
             }
 
             return sequence;
         }
+
+
+        #endregion
+
+        #region Text Animations
+
+        public Sequence BounceText(Transform textTransform)
+        {
+            var sequence = DOTween.Sequence();
+
+            sequence.Append(textTransform.DOScale(1.4f, .2f)
+                .SetEase(Ease.Linear));
+
+            sequence.Append(textTransform.DOScale(1f, .5f)
+                .SetEase(Ease.OutBounce));
+
+            return sequence;
+        }
+
+        public Sequence PunchText(Transform textTransform)
+        {
+            var sequence = DOTween.Sequence();
+
+            sequence.Append(textTransform.DOScale(1.05f, .05f)
+                .SetEase(Ease.OutCirc));
+
+            sequence.Append(textTransform.DOScale(1f, .05f)
+                 .SetEase(Ease.OutCirc));
+
+            return sequence;
+        }
+
+        #endregion
+
+        #region Canvas Group Animations
+
+        public Tween FadeCanvasIn(CanvasGroup cg)
+        {
+            return cg.DOFade(1, .5f);
+        }
+
+        public Tween FadeCanvasOut(CanvasGroup cg)
+        {
+            return cg.DOFade(0, .5f);
+        }
+
+        #endregion
     }
 }

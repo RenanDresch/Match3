@@ -1,5 +1,7 @@
 ﻿using DG.Tweening;
+using Game.Contracts;
 using Game.FX;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,7 +16,7 @@ namespace Game.Logic
         private GridController gridController = default;
 
         [SerializeField]
-        private SoudFXController soundFXController = default;
+        private SoundFXController soundFXController = default;
 
         [SerializeField]
         private GameTimer gameTimer = default;
@@ -22,26 +24,106 @@ namespace Game.Logic
         [SerializeField]
         private GeneralAnimator animator = default;
 
+        [SerializeField]
+        private ScoreController scoreController = default;
+
         private Gem selectedGem;
+
+        private bool canSelect = true;
+
+        #endregion
+
+        #region Properties
+
+        public bool PlayingGame { get; set; }
+        public System.Action<List<List<Gem>>> OnCombo { get; set; }
 
         #endregion
 
         #region Public Methods
 
-        public void SelectGem(Gem gem)
+        public void SelectGem(Gem gem, SwipeDirection direction)
         {
+            if (!canSelect || !PlayingGame)
+            {
+                return;
+            }
+
             if (selectedGem)
             {
-                if(selectedGem == gem)
+                if (selectedGem == gem)
                 {
                     return;
                 }
 
                 animator.AnimateDeselection(selectedGem.transform);
                 selectedGem.SpriteRenderer.sortingOrder = 0;
+                selectedGem = null;
+            }
 
-                if (gridController.CanSwapGems(selectedGem, gem))
+            var gemB = gridController.GetGemAtDirection(gem, direction);
+
+            if (gemB)
+            {
+                canSelect = false;
+
+                if (gridController.CanSwapGems(gemB, gem))
                 {
+                    soundFXController.PlaySwap();
+
+                    gridController.SwapGems(gemB, gem);
+
+                    var combos = gridController.GetGemsCombos(new Gem[] { gemB, gem });
+
+                    var animation = animator.AnimateSwap(gemB.transform, gem.transform);
+
+                    if (combos.Count > 0)
+                    {
+                        gameTimer.PauseTimer();
+                        animation.AppendCallback(() => OnComboConfirm(combos));
+                    }
+                    else
+                    {
+                        gridController.SwapGems(gemB, gem);
+
+                        var gemATransform = gemB.transform;
+                        var gemBTransform = gem.transform;
+
+                        animation.AppendCallback(() => soundFXController.PlaySwap());
+                        animation.OnComplete(() =>
+                        {
+                            animator.AnimateSwap(gemATransform, gemBTransform).OnComplete(() =>
+                            {
+                                canSelect = true;
+                            });
+                        });
+                    }
+                }
+            }
+        }
+
+        public void SelectGem(Gem gem)
+        {
+            if (!canSelect || !PlayingGame)
+            {
+                return;
+            }
+
+            if (selectedGem)
+            {
+                animator.AnimateDeselection(selectedGem.transform);
+                selectedGem.SpriteRenderer.sortingOrder = 0;
+
+                if (selectedGem == gem)
+                {
+                    selectedGem = null;
+                    return;
+                }
+
+                else if (gridController.CanSwapGems(selectedGem, gem))
+                {
+                    canSelect = false;
+
                     soundFXController.PlaySwap();
 
                     gridController.SwapGems(selectedGem, gem);
@@ -53,7 +135,7 @@ namespace Game.Logic
                     if (combos.Count > 0)
                     {
                         gameTimer.PauseTimer();
-                        animation.AppendCallback(() => OnSwapAnimationComplete(combos));
+                        animation.AppendCallback(() => OnComboConfirm(combos));
                     }
                     else
                     {
@@ -61,11 +143,14 @@ namespace Game.Logic
 
                         var gemATransform = selectedGem.transform;
                         var gemBTransform = gem.transform;
-                    
+
                         animation.AppendCallback(() => soundFXController.PlaySwap());
                         animation.OnComplete(() =>
                         {
-                            animator.AnimateSwap(gemATransform, gemBTransform);
+                            animator.AnimateSwap(gemATransform, gemBTransform).OnComplete(() =>
+                            {
+                                canSelect = true;
+                            });
                         });
                     }
 
@@ -82,13 +167,20 @@ namespace Game.Logic
             selectedGem.SpriteRenderer.sortingOrder = 1;
         }
 
-        private void OnSwapAnimationComplete(List<List<Gem>> combos)
+        private void OnComboConfirm(List<List<Gem>> combos)
         {
+            if (!PlayingGame)
+            {
+                return;
+            }
+
+            OnCombo?.Invoke(combos);
+
             soundFXController.PlayClear();
 
             var removedGems = combos.SelectMany(x => x).ToArray();
 
-            foreach(var gem in removedGems)
+            foreach (var gem in removedGems)
             {
                 gem.Removed = true;
             }
@@ -99,7 +191,7 @@ namespace Game.Logic
 
             var gemDroppedPosition = new Dictionary<Transform, Vector3>();
 
-            foreach(var gem in droppedGems)
+            foreach (var gem in droppedGems)
             {
                 if (!gem.Removed)
                 {
@@ -109,9 +201,7 @@ namespace Game.Logic
                 }
             }
 
-            animator.AnimateGemDrop(gemDroppedPosition);
-
-            //Contar pontos
+            animator.AnimateGemMove(gemDroppedPosition);
 
             var fadeAnimation = animator.AnimateGemFade(gemRenerers);
 
@@ -120,9 +210,79 @@ namespace Game.Logic
             fadeAnimation.AppendCallback(() =>
             {
                 gridController.RebuildGems(removedGems);
-                gameTimer.StartTimer();
                 animator.AnimateGemSpawn(removedGems.Select(x => x.SpriteRenderer).ToArray());
+
+                var totalModifiedGems = removedGems.Concat(droppedGems).ToArray();
+
+                var newCombos = gridController.GetGemsCombos(totalModifiedGems);
+
+                if (newCombos.Count > 0)
+                {
+                    StartCoroutine(ComboChainDelay(newCombos));
+                }
+                else
+                {
+                    if (!gridController.HasAvailableCombos())
+                    {
+                        StartCoroutine(ShuffleGemsDelay());
+                    }
+                    else
+                    {
+                        gameTimer.StartTimer();
+                        canSelect = true;
+                    }
+                }
             });
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void OnDestroy()
+        {
+            OnCombo = null;
+        }
+
+        private IEnumerator ComboChainDelay(List<List<Gem>> combos)
+        {
+            yield return new WaitForSecondsRealtime(0.5f);
+            if (PlayingGame)
+            {
+                OnComboConfirm(combos);
+            }
+        }
+
+        private IEnumerator ShuffleGemsDelay()
+        {
+            yield return new WaitForSecondsRealtime(0.25f);
+            if (PlayingGame)
+            {
+                gridController.ShufleGrid();
+
+                var newGemPositions = new Dictionary<Transform, Vector3>();
+
+                foreach (var gem in gridController.AllGems)
+                {
+                    newGemPositions.Add(
+                        gem.transform,
+                        gridController.GetGemWorldPosition(gem));
+                }
+
+                animator.AnimateGemMove(newGemPositions).AppendCallback(() =>
+                {
+                    var totalCombos = gridController.GetGemsCombos(gridController.AllGems);
+                    if (totalCombos.Count > 0)
+                    {
+                        StartCoroutine(ComboChainDelay(totalCombos));
+                    }
+                    else
+                    {
+                        gameTimer.StartTimer();
+                        canSelect = true;
+                    }
+                });
+            }
         }
 
         #endregion

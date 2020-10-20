@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Game.FX;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,13 +16,27 @@ namespace Game.Logic
         [SerializeField]
         private TMP_Text counterText = default;
 
+        [SerializeField]
+        private GeneralAnimator animator = default;
+
         private TimeSpan currentTime;
 
         private IEnumerator timerLabelUpdateCoroutine;
 
         #endregion
 
+        #region Properties
+
+        public System.Action OnTimeUp { get; set; }
+
+        #endregion
+
         #region Private Methods
+
+        private void OnDestroy()
+        {
+            OnTimeUp = null;
+        }
 
         private void Reset()
         {
@@ -40,16 +55,17 @@ namespace Game.Logic
                 currentTime = currentTime.Subtract(TimeSpan.FromSeconds(1));
                 UpdateLabel();
 
-                var sequence = DOTween.Sequence();
-
-                sequence.Append(counterText.transform.DOScale(1.05f, .05f)
-                    .SetEase(Ease.OutCirc));
-
-                sequence.Append(counterText.transform.DOScale(1f, .05f)
-                     .SetEase(Ease.OutCirc));
+                animator.PunchText(counterText.transform);
 
                 yield return new WaitForSecondsRealtime(1);
             }
+
+            currentTime = currentTime.Subtract(TimeSpan.FromSeconds(1));
+            UpdateLabel();
+
+            animator.PunchText(counterText.transform);
+
+            OnTimeUp?.Invoke();
         }
 
         #endregion
@@ -58,18 +74,10 @@ namespace Game.Logic
 
         public Sequence ResetTimer()
         {
-            currentTime = TimeSpan.FromMinutes(2);
+            currentTime = TimeSpan.FromSeconds(GameSettingsManager.Instance.TimerResetSeconds);
             UpdateLabel();
 
-            var sequence = DOTween.Sequence();
-
-            sequence.Append(counterText.transform.DOScale(1.4f, .2f)
-                .SetEase(Ease.Linear));
-
-            sequence.Append(counterText.transform.DOScale(1f, .5f)
-                .SetEase(Ease.OutBounce));
-
-            return sequence;
+            return animator.BounceText(counterText.transform);
         }
 
         public void StartTimer()

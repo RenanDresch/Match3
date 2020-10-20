@@ -150,16 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 354be3543b87216459a572eacca2b64d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availableGems:
-  - {fileID: 21300000, guid: c78292972b3effa4595d0dd48eccbec3, type: 3}
-  - {fileID: 21300000, guid: 6c833e7cfe7ff974bb6ac28c9e3f1278, type: 3}
-  - {fileID: 21300000, guid: bdaac03f1aed2ed48aec12b4ec06f4e5, type: 3}
-  - {fileID: 21300000, guid: 9f61139c663112644b081fea26016e36, type: 3}
-  - {fileID: 21300000, guid: bb5350641e5195e40966c64990003282, type: 3}
-  - {fileID: 21300000, guid: d256ab570f3d805488cf3750f66ff09b, type: 3}
-  - {fileID: 21300000, guid: 9e6625d2a18eb72449fcb13c4c6882dc, type: 3}
-  gridXSize: 8
-  gridYSize: 8
+  gameConfig: {fileID: 11400000, guid: 1398cff6c16648a4baa0afefc2357bcb, type: 2}
 --- !u!4 &794888149
 Transform:
   m_ObjectHideFlags: 0
@@ -226,7 +217,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 627ff46c2bc94a7448a6bc5993353c27, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0

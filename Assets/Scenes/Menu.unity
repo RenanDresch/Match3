@@ -1055,7 +1055,7 @@ PrefabInstance:
     - target: {fileID: 7414039659755253328, guid: 0c1e0c66669322547a300bffef151813,
         type: 3}
       propertyPath: m_Name
-      value: Button (2)
+      value: Quit Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c1e0c66669322547a300bffef151813, type: 3}
@@ -1065,6 +1065,38 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2123420935}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2123420937 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7414039659755253328, guid: 0c1e0c66669322547a300bffef151813,
+    type: 3}
+  m_PrefabInstance: {fileID: 2123420935}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2123420938 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5474271735406355096, guid: 0c1e0c66669322547a300bffef151813,
+    type: 3}
+  m_PrefabInstance: {fileID: 2123420935}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123420937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2123420939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123420937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5b1f2cf620d9c3498b34a6151a99f4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 2123420938}
+  fader: {fileID: 1709877174}
 --- !u!1001 &863003956944958123
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1190,7 +1222,7 @@ PrefabInstance:
     - target: {fileID: 7414039659755253328, guid: 0c1e0c66669322547a300bffef151813,
         type: 3}
       propertyPath: m_Name
-      value: Button
+      value: Start Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c1e0c66669322547a300bffef151813, type: 3}

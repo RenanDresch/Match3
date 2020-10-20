@@ -64,7 +64,7 @@ Material:
     - _GlowOffset: -0.012
     - _GlowOuter: 0.288
     - _GlowPower: 0.562
-    - _GradientScale: 21
+    - _GradientScale: 13
     - _LightAngle: 3.52
     - _MaskEdgeSoftness: 0.01
     - _MaskInverse: 0
@@ -77,9 +77,9 @@ Material:
     - _OutlineWidth: 0.22
     - _PerspectiveFilter: 0.798
     - _Reflectivity: 12.8
-    - _ScaleRatioA: 0.95238096
-    - _ScaleRatioB: 0.6709524
-    - _ScaleRatioC: 0.55222416
+    - _ScaleRatioA: 0.9230769
+    - _ScaleRatioB: 0.6503077
+    - _ScaleRatioC: 0.53523266
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
