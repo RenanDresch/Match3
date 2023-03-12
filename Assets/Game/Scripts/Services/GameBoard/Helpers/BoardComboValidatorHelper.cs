@@ -1,12 +1,14 @@
-﻿namespace Game.Services.GameBoard.Helpers
+﻿using Game.Models;
+
+namespace Game.Services.GameBoard.Helpers
 {
     public static class BoardComboValidatorHelper
     {
         public static bool PieceWillCombo(
-            int[,] board,
+            PieceType[,] board,
             int row,
             int column,
-            int piece
+            PieceType piece
         )
         {
             return PiecesOnTopCombo(
@@ -22,10 +24,10 @@
         }
 
         public static bool PiecesOnTopCombo(
-            int[,] board,
+            PieceType[,] board,
             int row,
             int column,
-            int piece
+            PieceType piece
         )
         {
             if (row < 2)
@@ -42,10 +44,10 @@
         }
 
         public static bool PiecesToTheLeftCombo(
-            int[,] board,
+            PieceType[,] board,
             int row,
             int column,
-            int piece
+            PieceType piece
         )
         {
             if (column < 2)

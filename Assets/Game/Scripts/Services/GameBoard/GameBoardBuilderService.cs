@@ -1,12 +1,18 @@
-﻿using Game.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.Models;
+using Game.Models.GameLoop;
 using Game.Services.GameBoard.Helpers;
 using Gaze.Utilities;
+using Random = UnityEngine.Random;
 
 namespace Game.Services.GameBoard
 {
     public class GameBoardBuilderService : BaseService
     {
-
+        readonly PieceType[] pieceTypePool = (PieceType[])Enum.GetValues(typeof(PieceType));
+        
         public GameBoardBuilderService(
             IDestroyable destroyable,
             ModelsRepositoryWrapper models
@@ -19,13 +25,15 @@ namespace Game.Services.GameBoard
         /// <summary>
         /// Fills from top to bottom, left to right while checking already
         /// placed pieces to avoid generating combos on start, while also caching
-        /// possible combos as it goes
+        /// possible combos
         /// </summary>
         /// <param name="board">The game board</param>
         void FillAvoidingCombos(
-            int[,] board
+            PieceType[,] board
         )
         {
+            var possibleCombosCache = new List<(int,int,ComboOrientation)>(); 
+
             for (var row = 0;
                  row < board.GetLength(0);
                  row++)
@@ -36,67 +44,32 @@ namespace Game.Services.GameBoard
                 {
                     board[row,
                         column] = GetRandomPieceAvoidingCombos(board, row, column);
-
-                    CheckAndCachePossibleCombos(
-                        board,
-                        row,
-                        column);
                 }
             }
 
-            //No combos are possible with this board, re-generate
-            if (combos.Count < 1)
-            {
-                FillAvoidingCombos(board);
-            }
+            // //No combos are possible with this board, re-generate
+            // if (combos.Count < 1)
+            // {
+            //     FillAvoidingCombos(board);
+            // }
         }
         
-        void CheckAndCachePossibleCombos(
-            int[,] board,
+        PieceType GetRandomPieceAvoidingCombos(
+            PieceType[,] board,
             int row,
-            int column,
-            int piece
+            int column
         )
         {
-            ByMovingUp(board, row, column, piece);
-            ByMovingLeft(board, row, column, piece);
-        }
-        
-        void ByMovingUp(
-            int[,] board,
-            int row,
-            int column,
-            int piece)
-        {
-            var willCombo = BoardComboValidatorHelper.PiecesOnTopCombo(
-                board,
-                row - 1,
-                column,
-                piece);
-        }
-        
-        void ByMovingLeft(
-            int[,] board,
-            int row,
-            int column,
-            int piece)
-        {
-            var willCombo = BoardComboValidatorHelper.PiecesToTheLeftCombo(
-                board,
-                row,
-                column - 1,
-                piece);
-        }
+            var possiblePieces = pieceTypePool.Where(
+                pieceType => !BoardComboValidatorHelper.PieceWillCombo(
+                    board,
+                    row,
+                    column,
+                    pieceType)).ToArray();
 
-
-        int GetRandomPieceAvoidingCombos(
-            int[,] board,
-            int row,
-            int column,
-            int piece
-        )
-        {
-            
+            return possiblePieces[Random.Range(
+                0,
+                possiblePieces.Length)];
         }
     }
 }
