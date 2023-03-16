@@ -28,12 +28,26 @@ namespace Game.Services.GameBoard
         /// possible combos
         /// </summary>
         /// <param name="board">The game board</param>
+        /// <param name="possibleCombos">Caches the possible combos for the generated board</param>
         void FillAvoidingCombos(
+            PieceType[,] board,
+            ISet<ComboIndex> possibleCombos
+        )
+        {
+            var combosAvailable = 0;
+
+            while (combosAvailable < 1)
+            {
+                BuildBoard(board);
+                possibleCombos = board.ComboIndexes();
+                combosAvailable = possibleCombos.Count;
+            }
+        }
+
+        void BuildBoard(
             PieceType[,] board
         )
         {
-            var possibleCombosCache = new List<(int,int,ComboOrientation)>(); 
-
             for (var row = 0;
                  row < board.GetLength(0);
                  row++)
@@ -46,12 +60,6 @@ namespace Game.Services.GameBoard
                         column] = GetRandomPieceAvoidingCombos(board, row, column);
                 }
             }
-
-            // //No combos are possible with this board, re-generate
-            // if (combos.Count < 1)
-            // {
-            //     FillAvoidingCombos(board);
-            // }
         }
         
         PieceType GetRandomPieceAvoidingCombos(
@@ -61,7 +69,7 @@ namespace Game.Services.GameBoard
         )
         {
             var possiblePieces = pieceTypePool.Where(
-                pieceType => !BoardComboValidatorHelper.PieceWillCombo(
+                pieceType => !BoardComboValidator.PieceWillCombo(
                     board,
                     row,
                     column,

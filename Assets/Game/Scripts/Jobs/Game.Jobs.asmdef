@@ -1,0 +1,18 @@
+{
+    "name": "Game.Jobs",
+    "rootNamespace": "Game.Jobs",
+    "references": [
+        "GUID:8b607678083c7b24688d880722d0008d",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:2665a8d13d1b3f18800f46e256720795"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

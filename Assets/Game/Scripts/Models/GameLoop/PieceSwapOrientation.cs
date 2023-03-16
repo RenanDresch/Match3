@@ -3,7 +3,7 @@
     /// <summary>
     /// Used to index possible combos
     /// </summary>
-    public enum ComboOrientation
+    public enum PieceSwapOrientation
     {
         Undefined,
         Horizontal,

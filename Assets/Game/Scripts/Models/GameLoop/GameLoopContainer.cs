@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Models.App;
+using Game.Models.GameLoop.Jobs;
 using Gaze.MCS;
 
 namespace Game.Models.GameLoop
@@ -15,5 +16,10 @@ namespace Game.Models.GameLoop
         public readonly IReactiveProperty<int> SecondsLeft = new ReactiveProperty<int>();
         [Volatile]
         public readonly IReactiveProperty<TimerState> TimerState = new ReactiveProperty<TimerState>();
+        [Volatile]
+        public readonly IReactiveProperty<BoardJobData> BoardJobData = new ReactiveProperty<BoardJobData>();
+
+        //[Volatile]
+        //public readonly IReactiveProperty<BoardBuildingJob> BoardBuildingJob = new ReactiveProperty<BoardBuildingJob>(new BoardBuildingJob());
     }
 }
